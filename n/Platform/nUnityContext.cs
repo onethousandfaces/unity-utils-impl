@@ -3,10 +3,12 @@ using System;
 namespace n.Platform
 {
   /** Generic platform specific handle to hold context information */
-	public interface nContext
+	public class nUnityContext : nContext
 	{
     /** Return a platform specific context object */
-    T Get<T>();
+    public T Get<T>() {
+      return default(T);
+    }
 	}
 }
 

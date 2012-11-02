@@ -2,13 +2,16 @@ using System;
 
 namespace n.Platform
 {
-	public interface nLogWriter
+	public class nUnityLogWriter : nLogWriter
 	{
-    /** Log a single message */
-		void Trace(string message);
-
-    /** Log an error message */
-    void Error(string message, Exception e);
+    public void Trace (string message)
+    {
+      throw new NotImplementedException ();
+    }
+    public void Error (string message, Exception e)
+    {
+      throw new NotImplementedException ();
+    }
 	}
 }
 

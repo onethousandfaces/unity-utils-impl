@@ -9,7 +9,6 @@ namespace n.Platform
       resolver.Bind<nDb, nUnityDb>();
       resolver.Bind<nDispatcher, nUnityDispatcher>();
       resolver.Bind<nLogWriter, nUnityLogWriter>();
-      resolver.Bind<nViewFactory, nUnityViewFactory>();
     }
 	}
 }
