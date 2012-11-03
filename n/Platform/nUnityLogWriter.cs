@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace n.Platform
 {
@@ -6,11 +7,13 @@ namespace n.Platform
 	{
     public void Trace (string message)
     {
-      throw new NotImplementedException ();
+      Debug.Log(message);
     }
+
     public void Error (string message, Exception e)
     {
-      throw new NotImplementedException ();
+      var msg = String.Format("{0}:\n{1}\n\n:{2}", message, e.ToString(), e.StackTrace.ToString());
+      Debug.LogError(msg);
     }
 	}
 }

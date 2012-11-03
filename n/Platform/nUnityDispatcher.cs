@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace n.Platform
 {
@@ -7,7 +8,8 @@ namespace n.Platform
 	{
     public void Dispatch (nView view)
     {
-      throw new NotImplementedException ();
+      var id = view.Action.Id;
+      Application.LoadLevel(id);
     }
 	}
 }

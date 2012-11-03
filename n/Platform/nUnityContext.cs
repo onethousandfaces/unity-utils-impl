@@ -2,7 +2,7 @@ using System;
 
 namespace n.Platform
 {
-  /** Generic platform specific handle to hold context information */
+  /** Unity doesn't really need a context; this is a just a dummy class */
 	public class nUnityContext : nContext
 	{
     /** Return a platform specific context object */

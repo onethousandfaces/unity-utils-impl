@@ -51,11 +51,18 @@ namespace n.Gfx
     public int Depth {
       get { return (int) Math.Floor(_instance.transform.position[2]); }
       set { 
-        _instance.transform.position[2] = value;
+        _instance.transform.position = new Vector3(
+          _instance.transform.position[0],
+          _instance.transform.position[1],
+          (float) value
+        );
       }
     }
 
     /** Rotation */
+    public float Rotation {
+      get; set;
+    }
 
     /** If this prop is manifest on the game scene */
     public bool Manifest { 
