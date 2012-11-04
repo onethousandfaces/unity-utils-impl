@@ -71,6 +71,12 @@ namespace n.Gfx
       set { _cam.backgroundColor = value; }
     }
 
+    /** Convert mouse coordinates to camera coordinates */
+    public Ray ScreenPointToRay(Vector3 point) {
+      var ray = _cam.ScreenPointToRay(point);
+      return ray;
+    }
+
     /** Camera render order */
     public int Depth {
       get { return (int) Math.Floor(_cam.depth); }

@@ -98,9 +98,11 @@ namespace n.Gfx
       var rtn = (GameObject)new GameObject (
         Name (),
         typeof(MeshRenderer), // Required to render
-        typeof(MeshFilter)    // Required to have a mesh
+        typeof(MeshFilter),   // Required to have a mesh
+        typeof(MeshCollider)  // Required to catch input events
       );
       rtn.GetComponent<MeshFilter> ().mesh = _mesh;
+      rtn.GetComponent<MeshCollider> ().sharedMesh = _mesh;
       
       /* Set texture */
       if (Texture != null) {

@@ -13,6 +13,8 @@
 //    limitations under the License.
 using System;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace n.Gfx
 {
@@ -34,6 +36,8 @@ namespace n.Gfx
     private GameObject _instance = null;
 
     private float _rotation = 0;
+
+    private IDictionary<nPropClick, nCamera> _clicks = new Dictionary<nPropClick, nCamera>();
 
     public nProp (Texture texture, Vector2 size)
     {
@@ -105,10 +109,65 @@ namespace n.Gfx
         if (value) {
           if (_instance == null) {
             _instance = _quad.Manifest();
+            _instance.AddComponent(typeof(nPropInput));
+            _instance.GetComponent<nPropInput>().Clicks = _clicks;
+            _instance.GetComponent<nPropInput>().Parent = this;
           }
         }
         else if (_instance != null) {
           GameObject.Destroy(_instance);
+        }
+      }
+    }
+
+    /** Listen for a click on this object; delegate must be unique */
+    public void Listen(nCamera cam, nPropClick click) {
+      _clicks[click] = cam;
+    }
+  }
+
+  /** Prop click event type */
+  public delegate void nPropClick(nProp prop);
+
+  /** Handle events for the prop */
+  public class nPropInput : MonoBehaviour {
+
+    public IDictionary<nPropClick, nCamera> Clicks { get; set; }
+
+    public nProp Parent { get; set; }
+
+    public void Update ()
+    {
+      var mouse = Input.mousePosition;
+      var click = Input.GetMouseButtonDown (0);
+      if (click && Clicks.Keys.Any()) {
+
+        /* collect cameras so we dont multi cast */
+        var camList = new List<nCamera>();
+        var camHits = new Dictionary<nCamera, RaycastHit>();
+        foreach(var c in Clicks.Keys) {
+          var cam = Clicks[c];
+          if (!camList.Contains(cam)) 
+            camList.Add (cam);
+        }
+
+        /* cast for each camera */
+        foreach(var cc in camList) {
+          var ray = cc.ScreenPointToRay(mouse);
+          RaycastHit hit;
+          Physics.Raycast(ray, out hit);
+          camHits[cc] = hit;
+        }
+
+        /* Look for match and execute delegates */
+        foreach(var c in Clicks.Keys) {
+          var cam = Clicks[c];
+          var hit = camHits[cam];
+          if (hit.collider != null) {
+            if (hit.collider.gameObject == this.gameObject) {
+              c(this.Parent);
+            }
+          }
         }
       }
     }
