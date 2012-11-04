@@ -17,7 +17,13 @@ using UnityEngine;
 
 namespace n.Gfx
 {
-  /** A flat 2D textured quad */
+  /** 
+   * A flat 2D textured quad 
+   * <p>
+   * When you create the quad you must choose the size in world units.
+   * The quad mesh is always centered around (0, 0); use transform to 
+   * move it.
+   */
   public class nQuad
   {
     public Vector2[] UV { get; set; }
@@ -33,25 +39,32 @@ namespace n.Gfx
     private string _name;
 
     /** GameObject instances created will be named Name__[RandomNumber] */
-    public nQuad (string name) {
+    public nQuad (string name, Vector2 size) {
       _name = name;
-      Init();
+      Init(size);
     }
 
     /** GameObject instances created will be named Quad__[RandomNumber] */
-    public nQuad() {
+    public nQuad(Vector2 size) {
       _name = "Quad";
-      Init();
+      Init(size);
     }
 
-    private void Init() {
+    /** Returns the 'size' of this quad in world units */
+    public Vector2 Size {
+      get; private set;
+    }
+
+    private void Init(Vector2 size) {
+      var x = size[0] / 2;
+      var y = size[1] / 2;
       Texture = null;
       _mesh = new Mesh();
       _vertices = new Vector3[] {
-        new Vector3( 1, 1,  0),
-        new Vector3( 1, -1, 0),
-        new Vector3(-1, 1, 0),
-        new Vector3(-1, -1, 0),
+        new Vector3( x, y,  0),
+        new Vector3( x, -y, 0),
+        new Vector3(-x, y, 0),
+        new Vector3(-x, -y, 0),
       };
       UV = new Vector2[] {
         new Vector2(1, 1),

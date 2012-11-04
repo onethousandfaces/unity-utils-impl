@@ -33,9 +33,11 @@ namespace n.Gfx
 
     private GameObject _instance = null;
 
-    public nProp (Texture texture)
+    private float _rotation = 0;
+
+    public nProp (Texture texture, Vector2 size)
     {
-      _quad = new nQuad();
+      _quad = new nQuad(size);
       _quad.Texture = texture;
     }
 
@@ -44,8 +46,31 @@ namespace n.Gfx
     }
 
     /** Position */
+    public Vector2 Position {
+      get { 
+        var p = _instance.transform.position;
+        return new Vector2 (p [0], p [1]);
+      }
+      set { 
+        var p = _instance.transform.position;
+        _instance.transform.position = new Vector3(value[0], value[1], p[2]);
+      }
+    }
+
+    /** Set the size of this prop in world units */
+    public void Resize(Vector2 size) {
+    }
 
     /** Scale */
+    public Vector2 Scale {
+      get { 
+        var s = _instance.transform.localScale;
+        return new Vector2(s[0], s[1]);
+      }
+      set {
+        _instance.transform.localScale = new Vector3(value[0], value[1], 1);
+      }
+    }
 
     /** Z-index */
     public int Depth {
@@ -61,11 +86,18 @@ namespace n.Gfx
 
     /** Rotation */
     public float Rotation {
-      get; set;
+      get {
+        return _rotation;
+      }
+      set {
+        _instance.transform.Rotate(
+          new Vector3(0, 0, 1), value);
+        _rotation = value;
+      }
     }
 
     /** If this prop is manifest on the game scene */
-    public bool Manifest { 
+    public bool Visible { 
       get {
         return _instance != null;
       }
