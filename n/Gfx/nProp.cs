@@ -39,6 +39,9 @@ namespace n.Gfx
 
     private IDictionary<nPropClick, nCamera> _clicks = new Dictionary<nPropClick, nCamera>();
 
+    /** User data attached to this prop */
+    public object Data { get; set; }
+
     public nProp (Texture texture, Vector2 size)
     {
       _quad = new nQuad(size);
