@@ -59,13 +59,11 @@ namespace n.Gfx
         return new Vector2 (p [0], p [1]);
       }
       set { 
-        var p = _instance.transform.position;
-        _instance.transform.position = new Vector3(value[0], value[1], p[2]);
+        if (_instance != null) {
+          var p = _instance.transform.position;
+          _instance.transform.position = new Vector3(value[0], value[1], p[2]);
+        }
       }
-    }
-
-    /** Set the size of this prop in world units */
-    public void Resize(Vector2 size) {
     }
 
     /** Scale */
@@ -75,7 +73,9 @@ namespace n.Gfx
         return new Vector2(s[0], s[1]);
       }
       set {
-        _instance.transform.localScale = new Vector3(value[0], value[1], 1);
+        if (_instance != null) {
+          _instance.transform.localScale = new Vector3(value[0], value[1], 1);
+        }
       }
     }
 
@@ -83,11 +83,13 @@ namespace n.Gfx
     public int Depth {
       get { return (int) Math.Floor(_instance.transform.position[2]); }
       set { 
-        _instance.transform.position = new Vector3(
-          _instance.transform.position[0],
-          _instance.transform.position[1],
-          (float) value
-        );
+        if (_instance != null) {
+          _instance.transform.position = new Vector3(
+            _instance.transform.position[0],
+            _instance.transform.position[1],
+            (float) value
+          );
+        }
       }
     }
 
@@ -97,9 +99,10 @@ namespace n.Gfx
         return _rotation;
       }
       set {
-        _instance.transform.Rotate(
-          new Vector3(0, 0, 1), value);
-        _rotation = value;
+        if (_instance != null) {
+          _instance.transform.Rotate(new Vector3(0, 0, 1), value);
+          _rotation = value;
+        }
       }
     }
 

@@ -34,9 +34,9 @@ namespace n.Gfx
 
     private int[] _triangles;
 
-    private Mesh _mesh;
+    protected Mesh _mesh;
 
-    private string _name;
+    protected string _name;
 
     /** GameObject instances created will be named Name__[RandomNumber] */
     public nQuad (string name, Vector2 size) {
@@ -84,16 +84,15 @@ namespace n.Gfx
     }
 
     /** Generate a name for this quad */
-    private string Name () {
+    protected string Name () {
       var random = UnityEngine.Random.Range(0, int.MaxValue);
       var name = String.Format("{0}__{1}", _name, random);
       return name;
     }
 
     /** Create a GameObject for this quad and add it to the scene */
-    public GameObject Manifest ()
+    public virtual GameObject Manifest ()
     {
-
       /* Create object and add to scene */
       var rtn = (GameObject)new GameObject (
         Name (),
