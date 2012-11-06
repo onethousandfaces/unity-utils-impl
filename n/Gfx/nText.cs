@@ -66,8 +66,10 @@ namespace n.Gfx
       mr.material = Font.material;
       mr.material.color = Color;
 
+      /* this seems to mysteriously control the font quality. O_o */
+      tm.fontSize = (int) (100 * FontSize);
+
       /* font size */
-      tm.fontSize = 100;
       tm.characterSize = FontSize * 10.0f / tm.fontSize;
       tm.text = Text;
       tm.lineSpacing = tm.lineSpacing * 0.85f;
