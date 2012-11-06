@@ -42,6 +42,13 @@ namespace n.Gfx
     /** User data attached to this prop */
     public object Data { get; set; }
 
+    public nProp (string texture, Vector2 size)
+    {
+      var t = (Texture) Resources.Load(texture);
+      _quad = new nQuad(size);
+      _quad.Texture = t;
+    }
+
     public nProp (Texture texture, Vector2 size)
     {
       _quad = new nQuad(size);
@@ -106,6 +113,15 @@ namespace n.Gfx
       }
     }
 
+    /** Color of the base quad if no texture */
+    public Color Color {
+      set {
+        if (_instance != null) {
+          _instance.renderer.material.color = value;
+        }
+      }
+    }
+
     /** If this prop is manifest on the game scene */
     public bool Visible { 
       get {
@@ -150,7 +166,7 @@ namespace n.Gfx
 
         /* collect cameras so we dont multi cast */
         var camList = new List<nCamera>();
-        var camHits = new Dictionary<nCamera, RaycastHit>();
+        var camHits = new Dictionary<nCamera, RaycastHit[]>();
         foreach(var c in Clicks.Keys) {
           var cam = Clicks[c];
           if (!camList.Contains(cam)) 
@@ -159,19 +175,27 @@ namespace n.Gfx
 
         /* cast for each camera */
         foreach(var cc in camList) {
-          var ray = cc.ScreenPointToRay(mouse);
-          RaycastHit hit;
-          Physics.Raycast(ray, out hit);
-          camHits[cc] = hit;
+          if (cc != null) {
+            var ray = cc.ScreenPointToRay(mouse);
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(ray);
+            camHits[cc] = hits;
+          }
         }
 
         /* Look for match and execute delegates */
         foreach(var c in Clicks.Keys) {
           var cam = Clicks[c];
-          var hit = camHits[cam];
-          if (hit.collider != null) {
-            if (hit.collider.gameObject == this.gameObject) {
-              c(this.Parent);
+          if (cam != null) {
+            var hits = camHits[cam];
+            if (hits != null) {
+              foreach (var h in hits) {
+                if (h.collider != null) {
+                  if (h.collider.gameObject == this.gameObject) {
+                    c(this.Parent);
+                  }
+                }
+              }
             }
           }
         }
