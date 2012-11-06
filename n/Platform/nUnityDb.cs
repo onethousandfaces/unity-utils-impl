@@ -16,8 +16,18 @@ using System;
 
 namespace n.Platform.Db
 {
-  public class CookieRepo : nDb
+  public class nUnityDb : nDb
   {
+    private IDbContainer _dbc;
+    
+    private RecordSerializer _rs;
+  
+    public nUnityDb (IDbContainer container)
+    {
+      _dbc = container;
+      _rs = new RecordSerializer();
+    }
+    
     public int Count<T> () where T : n.App.nDbRecord
     {
       throw new NotImplementedException ();

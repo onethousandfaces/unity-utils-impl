@@ -1,5 +1,6 @@
 using System;
 using n.Platform.Db;
+using n.Platform.Db.Impl;
 
 namespace n.Platform
 {
@@ -10,9 +11,9 @@ namespace n.Platform
       resolver.Bind<nDispatcher, nUnityDispatcher>();
       resolver.Bind<nLogWriter, nUnityLogWriter>();
       #if UNITY_WEBPLAYER
-        resolver.Bind<nDb, CookieRepo>();
+        resolver.Bind<IDbContainer, CookieDbContainer>();
       #else
-        resolver.Bind<nDb, SqliteRepo>();
+        resolver.Bind<IDbContainer, FileDbContainer>();
       #endif
     }
 	}

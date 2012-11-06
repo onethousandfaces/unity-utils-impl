@@ -51,10 +51,10 @@ namespace n.Gfx
         typeof(MeshCollider)  // Required to catch input events
       );
 
-      var tm = rtn.GetComponent<TextMesh>();
-      var mr = rtn.GetComponent<MeshRenderer>();
-      var mc = rtn.GetComponent<MeshCollider>();
-      var mf = rtn.GetComponent<MeshFilter>();
+      var tm = rtn.GetComponent<TextMesh> ();
+      var mr = rtn.GetComponent<MeshRenderer> ();
+      var mc = rtn.GetComponent<MeshCollider> ();
+      var mf = rtn.GetComponent<MeshFilter> ();
 
       /* collision box */
       mc.sharedMesh = _mesh;
@@ -62,12 +62,16 @@ namespace n.Gfx
       mf.renderer.material.color = Color.red;
 
       /* font texture */
-      tm.font = Font;
-      mr.material = Font.material;
+      if (Font != null) {
+        tm.font = Font;
+        mr.material = Font.material;
+      }
       mr.material.color = Color;
 
+      /* this seems to mysteriously control the font quality. O_o */
+      tm.fontSize = (int) (100 * FontSize);
+
       /* font size */
-      tm.fontSize = 100;
       tm.characterSize = FontSize * 10.0f / tm.fontSize;
       tm.text = Text;
       tm.lineSpacing = tm.lineSpacing * 0.85f;
