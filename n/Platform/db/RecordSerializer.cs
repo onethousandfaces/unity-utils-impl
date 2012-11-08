@@ -14,19 +14,81 @@
 //    limitations under the License.
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using System.Xml;
+using System.Text;
+using System.IO;
+using n.App;
+using System.Reflection;
 
 namespace n.Platform.Db
 {
   public class RecordSerializer
   {
-    /** Turns an array of objects into a string */
-    public string Serialize<T>(IEnumerable<T> items) {
-      return default(string);
+    public string Serialize(Type t, IList<nDbRecord> records) 
+    {
+      MethodInfo method = typeof(RecordSerializer).GetMethod("SerializeXml");
+      MethodInfo item = method.MakeGenericMethod (new Type[] { t });
+      var xml = (string) item.Invoke (this, new object[] { records });
+      var block = Encrypt(xml, t.FullName);
+      return block;
+    }
+
+    public IList<nDbRecord> Deserialize(Type t, string records) 
+    {
+      var xml = Crypto.DecryptStringAES(records, t.FullName);
+      MethodInfo method = typeof(RecordSerializer).GetMethod("DeserializeXml");
+      MethodInfo item = method.MakeGenericMethod (new Type[] { t });
+      var rtn = (IList<nDbRecord>) item.Invoke (this, new object[] { xml });
+      return rtn;
+    }
+
+    private string Encrypt (string raw, string key)
+    {
+      var rtn = Crypto.EncryptStringAES(raw, "RecordSerializer__" + key);
+      return rtn;
+    }
+
+    private string Decrypt (string raw, string key)
+    {
+      var rtn = Crypto.DecryptStringAES(raw, "RecordSerializer__" + key);
+      return rtn;
+    }
+
+    private string SerializeXml<T>(T value) {
+      if(value == null) {
+        return null;
+      }
+      
+      XmlSerializer serializer = new XmlSerializer(typeof(T));
+      
+      XmlWriterSettings settings = new XmlWriterSettings();
+      settings.Encoding = new UnicodeEncoding(false, false); // no BOM in a .NET string
+      settings.Indent = false;
+      settings.OmitXmlDeclaration = false;
+      
+      using(StringWriter textWriter = new StringWriter()) {
+        using(XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings)) {
+          serializer.Serialize(xmlWriter, value);
+        }
+        return textWriter.ToString();
+      }
     }
     
-    /** Turns a string into an array of objects */
-    public IList<T> Deserialize<T>() {
-      return default(List<T>);
+    private T DeserializeXml<T>(string xml) {
+      if(string.IsNullOrEmpty(xml)) {
+        return default(T);
+      }
+      
+      XmlSerializer serializer = new XmlSerializer(typeof(T));
+      
+      XmlReaderSettings settings = new XmlReaderSettings();
+
+      using(StringReader textReader = new StringReader(xml)) {
+        using(XmlReader xmlReader = XmlReader.Create(textReader, settings)) {
+          return (T) serializer.Deserialize(xmlReader);
+        }
+      }
     }
   }
 }

@@ -13,20 +13,39 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
+using System.IO;
 
 namespace n.Platform.Db.Impl
 {
   /** Saves items as files in a data folder */
-  public class FileDbContainer : IDbContainer {
+  public class FileDbContainer : IDbContainer 
+  {
+    private string Path (string key) {
+      return @"/tmp/" + key + ".txt";
+    }
+
     public void Set (string key, string value) {
+      #if UNITY_WEBPLAYER
+      #else
+        System.IO.File.WriteAllText(Path(key), value);
+      #endif
     }
     
     public string Get (string key) {
-      return default(string);
+      #if UNITY_WEBPLAYER
+        return "";
+      #else
+        var rtn = Exists(key) ? File.ReadAllText(Path(key)) : "";
+        return rtn;
+      #endif
     }
     
     public bool Exists(string key) {
-      return default(bool);
+      #if UNITY_WEBPLAYER
+        return false;
+      #else
+        return File.Exists(Path(key));
+      #endif
     }
   }
 }
